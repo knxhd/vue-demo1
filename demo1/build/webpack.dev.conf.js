@@ -13,15 +13,45 @@ const portfinder = require('portfinder')
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
+const express = require('express')
+const app = express()
+
+//1.读取数据
+var appData=require('../data.json');
+var apiRoutes=express.Router();
+app.use('/api',apiRoutes);
+var seller=appData.seller;
+var goods=appData.goods;
+var ratings=appData.ratings;
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
-    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
+    rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap, usePostCSS: true})
   },
   // cheap-module-eval-source-map is faster for development
   devtool: config.dev.devtool,
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+{
+  apiRoutes.get('/seller',function (req,res) {
+    res.json({
+      errno: 0,
+      data:seller
+    });
+  });
+  apiRoutes.get('/goods',function(req,res){
+    res.json({
+      errno:0,
+      data:goods
+    });
+  });
+  apiRoutes.get('/ratings',function(req,res){
+    res.json({
+      errno:0,
+      data:ratings
+    });
+  });
+},
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
@@ -85,8 +115,8 @@ module.exports = new Promise((resolve, reject) => {
           messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
         },
         onErrors: config.dev.notifyOnErrors
-        ? utils.createNotifierCallback()
-        : undefined
+          ? utils.createNotifierCallback()
+          : undefined
       }))
 
       resolve(devWebpackConfig)
